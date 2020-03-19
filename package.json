@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-plugin-unsplash",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Gatsby source plugin for fetching photos from Unsplash",
   "main": "index.js",
   "scripts": {
