@@ -2,8 +2,37 @@ import { createRemoteFileNode } from "gatsby-source-filesystem";
 import { asyncForEach } from "./lib";
 import { fetchCollectionPhotos } from "./api";
 
+exports.onCreateNode = async ({
+  node,
+  cache,
+  actions,
+  store,
+  createNodeId
+}) => {
+  let fileNode;
+  const { createNode } = actions;
+  if (node.internal.type === "UnsplashPhoto") {
+    try {
+      fileNode = await createRemoteFileNode({
+        url: node.urls.regular,
+        parentNodeId: node.id,
+        createNode,
+        createNodeId,
+        store,
+        cache
+      });
+    } catch (e) {
+      console.log("ERROR: ", e);
+    }
+  }
+
+  if (fileNode) {
+    node.localImage___NODE = fileNode.id;
+  }
+};
+
 exports.sourceNodes = async (
-  { actions, createNodeId, store, cache, createContentDigest },
+  { actions, createContentDigest },
   { collectionId, clientId }
 ) => {
   const { createNode } = actions;
@@ -26,26 +55,12 @@ exports.sourceNodes = async (
       children: [],
       internal: {
         type: `UnsplashPhoto`,
-        mediaType: `text/json`,
+        mediaType: "application/json",
         content: nodeContent,
         contentDigest: createContentDigest(photo)
       }
     };
     const node = Object.assign({}, photo, nodeMeta);
-
-    const fileNode = await createRemoteFileNode({
-      url: photo.urls.regular,
-      parentNodeId: node.id,
-      createNode,
-      createNodeId,
-      store,
-      cache
-    });
-
-    if (fileNode) {
-      node.localFile___NODE = fileNode.id;
-    }
-
     createNode(node);
   };
 
