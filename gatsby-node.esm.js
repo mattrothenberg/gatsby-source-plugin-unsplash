@@ -33,7 +33,7 @@ exports.onCreateNode = async ({
 
 exports.sourceNodes = async (
   { actions, createContentDigest },
-  { collectionId, clientId }
+  { collectionId, clientId, perPage }
 ) => {
   const { createNode } = actions;
 
@@ -64,7 +64,11 @@ exports.sourceNodes = async (
     createNode(node);
   };
 
-  const photos = await fetchCollectionPhotos({ collectionId, clientId });
+  const photos = await fetchCollectionPhotos({
+    collectionId,
+    clientId,
+    perPage
+  });
   asyncForEach(photos, processPhoto);
 
   return;
