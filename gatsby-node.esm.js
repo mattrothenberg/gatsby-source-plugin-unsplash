@@ -55,7 +55,6 @@ exports.sourceNodes = async (
       children: [],
       internal: {
         type: `UnsplashPhoto`,
-        mediaType: "application/json",
         content: nodeContent,
         contentDigest: createContentDigest(photo)
       }
